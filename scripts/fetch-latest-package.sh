@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ue -o pipefail
 
 DISTRO=ubuntu
 SERIES=xenial
