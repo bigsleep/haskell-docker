@@ -33,6 +33,6 @@ if true; then
         exit 1;
     fi
 
-    export GNUPGHOME="\$GNUPGHOME"
-    set -a && source ./versions/$BASE_VERSION/env && set +a && envsubst < Dockerfile.template > Dockerfile
+    export DOLLAR='$'
+    set -a && source ./versions/$BASE_VERSION/env && set +a && envsubst < ./versions/$BASE_VERSION/Dockerfile.template > Dockerfile
 fi
