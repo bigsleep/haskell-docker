@@ -1,0 +1,46 @@
+version: 2
+jobs:
+    build:
+        working_directory: /work
+        docker:
+            - image: docker:18.02.0-ce-git
+        steps:
+            - checkout
+            - setup_remote_docker
+            - run: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+            - run: docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH} .
+            - run: docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}
+            - run: docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:latest
+    crawl:
+        machine: true
+        working_directory: ~/work
+        steps:
+            - checkout
+            - add_ssh_keys:
+                fingerprints:
+                    - ""
+            - run: ./scripts/job.sh
+workflows:
+    version: 2
+    docker-build:
+        jobs:
+            - build:
+                filters:
+                    branches:
+                        ignore: master
+                    tags:
+                        ignore: /.*/
+    scheduled-workflow:
+        triggers:
+            - schedule:
+                cron: "0 0 * * *"
+                filters:
+                    branches:
+                        only: master
+        jobs:
+            - crawl:
+                filters:
+                    branches:
+                        ignore: /.*/
+                    tags:
+                        ignore: /.*/
