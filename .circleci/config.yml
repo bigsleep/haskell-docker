@@ -19,7 +19,7 @@ jobs:
             - add_ssh_keys:
                 fingerprints:
                     - ""
-            - run: ./scripts/job.sh
+            - run: ./scripts/crawl.sh
 workflows:
     version: 2
     docker-build:
