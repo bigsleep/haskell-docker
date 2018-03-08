@@ -1,3 +1,4 @@
+# $BUILD_DATE
 FROM debian:stretch
 
 ENV LANG C.UTF-8
