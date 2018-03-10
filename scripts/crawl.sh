@@ -32,7 +32,7 @@ if [ -z "$(git branch -r | grep $GHC_VERSION | tr -d ' ')" ]; then
 else
     git branch -D $BRANCH || true
     git checkout origin/$BRANCH -b $BRANCH
-    git merge origin/master
+    git merge --no-edit origin/master
 fi
 
 export DOLLAR='$'
