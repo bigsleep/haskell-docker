@@ -25,10 +25,6 @@ if [ "$BASE_VERSION" = "" ]; then
     exit 1;
 fi
 
-export DOLLAR='$'
-export BUILD_DATE=$(date -u --rfc-3339 seconds)
-set -a && source ./versions/$BASE_VERSION/env && set +a && envsubst < Dockerfile.template > Dockerfile
-
 BRANCH=$GHC_VERSION
 if [ -z "$(git branch -r | grep $GHC_VERSION | tr -d ' ')" ]; then
     git branch -D $BRANCH || true
@@ -37,6 +33,10 @@ else
     git branch -D $BRANCH || true
     git checkout origin/$BRANCH -b $BRANCH
 fi
+
+export DOLLAR='$'
+export BUILD_DATE=$(date -u --rfc-3339 seconds)
+set -a && source ./versions/$BASE_VERSION/env && set +a && envsubst < Dockerfile.template > Dockerfile
 
 git add Dockerfile
 git commit -m "build trigger $GHC_VERSION"
