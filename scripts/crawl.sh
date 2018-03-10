@@ -33,9 +33,10 @@ BRANCH=$GHC_VERSION
 if [ -z "$(git branch -r | grep $GHC_VERSION | tr -d ' ')" ]; then
     git checkout origin/master -b $BRANCH
 else
-    git checkout $BRANCH
+    git branch -D $BRANCH || true
+    git checkout origin/$BRANCH -b $BRANCH
 fi
 
 git add Dockerfile
 git commit -m "build trigger $GHC_VERSION"
-git push origin $NEW_BRANCH:$NEW_BRANCH
+git push origin $BRANCH:$BRANCH
