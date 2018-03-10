@@ -10,6 +10,7 @@ jobs:
             - run: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             - run: docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH} .
             - run: docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}
+            - run: docker tag ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH} ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:latest
             - run: docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:latest
     crawl:
         machine: true
