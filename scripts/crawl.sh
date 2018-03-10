@@ -31,6 +31,7 @@ set -a && source ./versions/$BASE_VERSION/env && set +a && envsubst < Dockerfile
 
 BRANCH=$GHC_VERSION
 if [ -z "$(git branch -r | grep $GHC_VERSION | tr -d ' ')" ]; then
+    git branch -D $BRANCH || true
     git checkout origin/master -b $BRANCH
 else
     git branch -D $BRANCH || true
