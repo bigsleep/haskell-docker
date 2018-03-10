@@ -18,7 +18,7 @@ jobs:
             - checkout
             - add_ssh_keys:
                 fingerprints:
-                    - ""
+                    - "20:ed:11:cf:92:b2:fa:ff:24:a5:00:f3:fe:00:d9:ac"
             - run: ./scripts/crawl.sh
 workflows:
     version: 2
