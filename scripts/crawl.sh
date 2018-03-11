@@ -2,6 +2,9 @@
 
 set -ue -o pipefail
 
+git config --global user.email "bigsleep.mtkd@gmail.com"
+git config --global user.name "circleci"
+
 LATEST_GHC=$(./scripts/fetch-latest-package.sh ghc)
 
 LATEST_ALEX=$(./scripts/fetch-latest-package.sh alex)
