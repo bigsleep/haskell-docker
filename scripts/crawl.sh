@@ -20,8 +20,6 @@ export GHC_PACKAGES="$LATEST_GHC $LATEST_ALEX $LATEST_CABAL $LATEST_HAPPY"
 
 export GHC_VERSION=$(cut -b5- <<<"$LATEST_GHC")
 
-export STACK_VERSION=$(./scripts/fetch-stack-version.sh)
-
 BASE_VERSION=$(ls -d versions/* | xargs -n1 basename | awk -v version=$GHC_VERSION '{ pattern="^"$1 ; if (version ~ pattern) print }' | sort -V | tail -n1)
 if [ "$BASE_VERSION" = "" ]; then
     printf "env not found" >&2
