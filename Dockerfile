@@ -1,4 +1,4 @@
-# 2018-05-07 13:00:00+00:00
+# 2018-05-18 14:30:00+00:00
 FROM debian:stretch
 
 ENV LANG C.UTF-8
@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         ghc-8.2.2 alex-3.1.7 cabal-install-2.2 happy-1.19.5 \
-        zlib1g-dev libtinfo-dev libsqlite3-0 libsqlite3-dev ca-certificates g++ git curl xz-utils make
+        zlib1g-dev libtinfo-dev libsqlite3-0 libsqlite3-dev ca-certificates g++ git curl xz-utils make netbase
 
 RUN curl -sSL https://get.haskellstack.org/ | sh
 
