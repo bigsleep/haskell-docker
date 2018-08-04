@@ -2,8 +2,10 @@
 
 set -ue -o pipefail
 
-git config --global user.email "bigsleep.mtkd@gmail.com"
-git config --global user.name "circleci"
+if [ -z "${WITHOUT_GIT}" ]; then
+    git config --global user.email "bigsleep.mtkd@gmail.com"
+    git config --global user.name "circleci"
+fi
 
 LATEST_GHC=$(./scripts/fetch-latest-package.sh ghc)
 
@@ -27,19 +29,23 @@ if [ "$BASE_VERSION" = "" ]; then
 fi
 
 BRANCH=$GHC_VERSION
-if [ -z "$(git branch -r | grep $GHC_VERSION | tr -d ' ')" ]; then
-    git branch -D $BRANCH || true
-    git checkout origin/master -b $BRANCH
-else
-    git branch -D $BRANCH || true
-    git checkout origin/$BRANCH -b $BRANCH
-    git merge --no-edit origin/master
+if [ -z "${WITHOUT_GIT}" ]; then
+    if [ -z "$(git branch -r | grep $GHC_VERSION | tr -d ' ')" ]; then
+        git branch -D $BRANCH || true
+        git checkout origin/master -b $BRANCH
+    else
+        git branch -D $BRANCH || true
+        git checkout origin/$BRANCH -b $BRANCH
+        git merge --no-edit origin/master
+    fi
 fi
 
 export DOLLAR='$'
 export BUILD_DATE=$(date -u --rfc-3339 seconds)
 set -a && source ./versions/$BASE_VERSION/env && set +a && envsubst < Dockerfile.template > Dockerfile
 
-git add Dockerfile
-git commit -m "build trigger $GHC_VERSION"
-git push origin $BRANCH:$BRANCH
+if [ -z "${WITHOUT_GIT}" ]; then
+    git add Dockerfile
+    git commit -m "build trigger $GHC_VERSION"
+    git push origin $BRANCH:$BRANCH
+fi
