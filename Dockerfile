@@ -1,11 +1,11 @@
-# 2018-08-04 00:00:00+00:00
+# 2018-08-04 07:45:25+00:00
 FROM ubuntu:18.04
 
 ENV LANG C.UTF-8
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gnupg dirmngr && \
-    echo 'deb http://ppa.launchpad.net/hvr/ghc/ubuntu xenial main' > /etc/apt/sources.list.d/ghc.list && \
+    echo 'deb http://ppa.launchpad.net/hvr/ghc/ubuntu bionic main' > /etc/apt/sources.list.d/ghc.list && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F6F88286 && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
