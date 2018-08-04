@@ -1,5 +1,5 @@
-# 2018-08-03 00:00:37+00:00
-FROM debian:stretch
+# 2018-08-04 00:00:00+00:00
+FROM ubuntu:18.04
 
 ENV LANG C.UTF-8
 
