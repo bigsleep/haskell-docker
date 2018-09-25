@@ -9,7 +9,7 @@ if [ -z "${WITHOUT_GIT}" ]; then
     git config --global user.name "circleci"
 fi
 
-LATEST_GHC=$(./scripts/fetch-latest-package.sh ghc)
+LATEST_GHC=${LATEST_GHC:=$(./scripts/fetch-latest-package.sh ghc)}
 
 LATEST_ALEX=$(./scripts/fetch-latest-package.sh alex)
 ALEX_VERSION=$(cut -b6- <<<"$LATEST_ALEX")
@@ -29,7 +29,7 @@ export GHC_PACKAGES
 GHC_VERSION=$(cut -b5- <<<"$LATEST_GHC")
 export GHC_VERSION
 
-BASE_VERSION=$(find ./versions -print0 xargs -n1 basename | awk -v version="$GHC_VERSION" '{ pattern="^"$1 ; if (version ~ pattern) print }' | sort -V | tail -n1)
+BASE_VERSION=$(find ./versions -mindepth 1 -maxdepth 1 -type d -print0 | xargs --null -n1 basename | awk -v "version=$GHC_VERSION" '{ pattern="^"$1 ; if (version ~ pattern) print }' | sort -V | tail -n1)
 if [ "$BASE_VERSION" = "" ]; then
     printf "env not found" >&2
     exit 1;
