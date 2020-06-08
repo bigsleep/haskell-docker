@@ -20,7 +20,7 @@ jobs:
             target_cabal:
                 type: string
         steps:
-            - run: apk add bash curl git gettext jq
+            - run: apk add bash curl git gettext jq openssh
             - checkout
             - add_ssh_keys:
                 fingerprints:
