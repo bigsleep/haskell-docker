@@ -1,28 +1,32 @@
-version: 2
+version: 2.1
 jobs:
     build:
         working_directory: /work
         docker:
-            - image: docker:18.02.0-ce-git
+            - image: docker:18.06.0-ce-git
         steps:
             - checkout
             - setup_remote_docker
             - run: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             - run: docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH} .
             - run: docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}
-            - run: docker tag ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH} ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:latest
-            - run: docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:latest
-    crawl:
-        machine: true
-        working_directory: ~/work
+    push-build:
+        docker:
+            - image: alpine:3.12.0
+        working_directory: /work
+        parameters:
+            target_ghc:
+                type: string
+            target_cabal:
+                type: string
         steps:
+            - run: apk add bash curl git gettext jq openssh
             - checkout
             - add_ssh_keys:
                 fingerprints:
                     - "20:ed:11:cf:92:b2:fa:ff:24:a5:00:f3:fe:00:d9:ac"
-            - run: ./scripts/crawl.sh
+            - run: TARGET_GHC=<<parameters.target_ghc>> TARGET_CABAL=<<parameters.target_cabal>> ./scripts/push-build.sh
 workflows:
-    version: 2
     docker-build:
         jobs:
             - build:
@@ -34,9 +38,37 @@ workflows:
     scheduled-workflow:
         triggers:
             - schedule:
-                cron: "0 0 * * 1,3,5"
+                cron: "0 0 * * 1"
                 filters:
                     branches:
                         only: master
         jobs:
-            - crawl
+            - push-build:
+                target_ghc: ghc-8.10.1
+                target_cabal: cabal-install-3.2
+            - push-build:
+                target_ghc: ghc-8.8.3
+                target_cabal: cabal-install-3.2
+            - push-build:
+                target_ghc: ghc-8.6.5
+                target_cabal: cabal-install-2.4
+    force-push-build:
+        jobs:
+            - push-build:
+                filters:
+                    branches:
+                        only: force-push-build
+                target_ghc: ghc-8.10.1
+                target_cabal: cabal-install-3.2
+            - push-build:
+                filters:
+                    branches:
+                        only: force-push-build
+                target_ghc: ghc-8.8.3
+                target_cabal: cabal-install-3.2
+            - push-build:
+                filters:
+                    branches:
+                        only: force-push-build
+                target_ghc: ghc-8.6.5
+                target_cabal: cabal-install-2.4
