@@ -10,7 +10,7 @@ jobs:
             - run: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             - run: docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH} .
             - run: docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}
-    crawl:
+    push-build:
         docker:
             - image: alpine:3.12.0
         working_directory: /work
@@ -25,9 +25,8 @@ jobs:
             - add_ssh_keys:
                 fingerprints:
                     - "20:ed:11:cf:92:b2:fa:ff:24:a5:00:f3:fe:00:d9:ac"
-            - run: TARGET_GHC=<<parameters.target_ghc>> TARGET_CABAL=<<parameters.target_cabal>> ./scripts/crawl.sh
+            - run: TARGET_GHC=<<parameters.target_ghc>> TARGET_CABAL=<<parameters.target_cabal>> ./scripts/push-build.sh
 workflows:
-    version: 2
     docker-build:
         jobs:
             - build:
@@ -43,13 +42,41 @@ workflows:
                 filters:
                     branches:
                         only: master
+                    tags:
+                        ignore: /.*/
         jobs:
-            - crawl:
+            - push-build:
                 target_ghc: ghc-8.10.1
                 target_cabal: cabal-install-3.2
-            - crawl:
+            - push-build:
                 target_ghc: ghc-8.8.3
                 target_cabal: cabal-install-3.2
-            - crawl:
+            - push-build:
+                target_ghc: ghc-8.6.5
+                target_cabal: cabal-install-2.4
+    force-push-build:
+        jobs:
+            - push-build:
+                filters:
+                    branches:
+                        only: force-push-build
+                    tags:
+                        ignore: /.*/
+                target_ghc: ghc-8.10.1
+                target_cabal: cabal-install-3.2
+            - push-build:
+                filters:
+                    branches:
+                        only: force-push-build
+                    tags:
+                        ignore: /.*/
+                target_ghc: ghc-8.8.3
+                target_cabal: cabal-install-3.2
+            - push-build:
+                filters:
+                    branches:
+                        only: force-push-build
+                    tags:
+                        ignore: /.*/
                 target_ghc: ghc-8.6.5
                 target_cabal: cabal-install-2.4
