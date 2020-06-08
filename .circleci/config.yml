@@ -42,8 +42,6 @@ workflows:
                 filters:
                     branches:
                         only: master
-                    tags:
-                        ignore: /.*/
         jobs:
             - push-build:
                 target_ghc: ghc-8.10.1
@@ -60,23 +58,17 @@ workflows:
                 filters:
                     branches:
                         only: force-push-build
-                    tags:
-                        ignore: /.*/
                 target_ghc: ghc-8.10.1
                 target_cabal: cabal-install-3.2
             - push-build:
                 filters:
                     branches:
                         only: force-push-build
-                    tags:
-                        ignore: /.*/
                 target_ghc: ghc-8.8.3
                 target_cabal: cabal-install-3.2
             - push-build:
                 filters:
                     branches:
                         only: force-push-build
-                    tags:
-                        ignore: /.*/
                 target_ghc: ghc-8.6.5
                 target_cabal: cabal-install-2.4
