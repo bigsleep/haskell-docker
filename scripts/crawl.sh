@@ -20,7 +20,7 @@ export CABAL_VERSION
 GHC_PACKAGES="${TARGET_GHC} ${TARGET_GHC}-prof ${TARGET_GHC}-dyn ${TARGET_GHC}-htmldocs ${TARGET_CABAL}"
 export GHC_PACKAGES
 
-BASE_VERSION=$(find ./versions -mindepth 1 -maxdepth 1 -type d -print0 | xargs --null -n1 basename | awk -v "version=$GHC_VERSION" '{ pattern="^"$1 ; if (version ~ pattern) print }' | sort -V | tail -n1)
+BASE_VERSION=$(find ./versions -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 -n1 basename | awk -v "version=$GHC_VERSION" '{ pattern="^"$1 ; if (version ~ pattern) print }' | sort -V | tail -n1)
 if [ "$BASE_VERSION" = "" ]; then
     printf "env not found" >&2
     exit 1;
@@ -39,7 +39,7 @@ if [ -z "${WITHOUT_GIT}" ]; then
 fi
 
 export DOLLAR='$'
-BUILD_DATE="$(date -u --rfc-3339 seconds)"
+BUILD_DATE="$(date -u +'%Y-%m-%d %H:%M:%S+00:00')"
 export BUILD_DATE
 # shellcheck source=/dev/null
 set -a && source "./versions/$BASE_VERSION/env" && set +a && envsubst < Dockerfile.template > Dockerfile

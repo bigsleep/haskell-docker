@@ -12,7 +12,7 @@ jobs:
             - run: docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}
     crawl:
         docker:
-            - image: buildpack-deps:focal-scm
+            - image: alpine:3.12.0
         working_directory: /work
         parameters:
             target_ghc:
@@ -20,6 +20,7 @@ jobs:
             target_cabal:
                 type: string
         steps:
+            - run: apk add bash curl git gettext jq
             - checkout
             - add_ssh_keys:
                 fingerprints:
