@@ -32,7 +32,9 @@ workflows:
             - build:
                 filters:
                     branches:
-                        ignore: master
+                        ignore:
+                            - master
+                            - force-push-build
                     tags:
                         ignore: /.*/
     scheduled-workflow:
