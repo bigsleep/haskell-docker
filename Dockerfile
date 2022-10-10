@@ -1,4 +1,4 @@
-# 2022-10-03 00:10:10+00:00
+# 2022-10-10 00:10:08+00:00
 FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND noninteractive
